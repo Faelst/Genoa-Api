@@ -1,44 +1,21 @@
-// Update with your config settings.
+//const {connection} = require('./ConnectDbKeys.js')
+const path = require('path')
 
 module.exports = {
-
-  development: {
-    client: 'sqlite3',
-    connection: {
-      filename: './dev.sqlite3'
-    }
+  client: "mysql",
+  connection: {
+    database: 'genoa_seguros',
+    host: 'localhost',
+    port: '3306',
+    user: 'root',
+    password: 'admin'
   },
-
-  staging: {
-    client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
+  pool: {
+    min: 2,
+    max: 10,
   },
-
-  production: {
-    client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
-
+  migrations: {
+    directory: path.resolve(__dirname, 'src', 'DataBase', 'Migrations'),
+    tableName: 'knex_migrations'
+  },
 };
