@@ -1,15 +1,13 @@
-  
+const express = require('express');
+const router = express.Router();
+
 const Api = require('../Api');
 const { param } = require('express-validator');
 
+router.get('/clients', Api.clients.getAllClients);
 
-module.exports = function (app) {
-    app.get('/clients', Api.clients.getAllClients);
-    
-    app.get('/client/:id', param('id').customSanitizer(id => {
-        return id
-      }) , Api.clients.getClient);
+router.get('/client/:id', param('id').customSanitizer(id => {
+  return id
+}), Api.clients.getClient);
 
-    app.post('/client' , Api.clients.insertClient)
-
-}
+router.post('/client', Api.clients.insertClient)
