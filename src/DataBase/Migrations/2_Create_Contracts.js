@@ -5,7 +5,7 @@ exports.up = function (knex) {
     table.integer("client_id").unsigned()
     table.date("beginning_date").notNull();
     table.date("final_date").nullable();
-    table.float("total_amount_contract", 20, 10).notNull();
+    table.float("total_amount_contract", 20, 2).notNull();
     table.boolean("deleted").notNull().default(false);
     table.foreign("user_id").references("users.id");
     table.foreign("client_id").references("clients.id");

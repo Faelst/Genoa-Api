@@ -30,4 +30,8 @@ router.get("/Contract/:id", contracts.getContract);
 
 router.post("/Contract", postContractValidator, contracts.insertContract);
 
+router.delete("/Contract/:id", contracts.deleteContract);
+
+router.put("/Contract/", contracts.alterContract);
+
 module.exports = router;
