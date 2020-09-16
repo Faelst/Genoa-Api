@@ -7,7 +7,12 @@ exports.up = function (knex) {
     table.boolean("deleted").notNull().default(false);
     table.timestamp("create_at").notNull().default(knex.fn.now());
     table.timestamp("deleted_at").nullable();
-  });
+  }).then(() => {
+    return knex("users").insert([
+      { name: "Genoa Seguros", user_name: "Genoa_User",  password: "95f6aef82c3bed7904c8d4daff" }
+    ]);
+  }
+  )
 };
 
 exports.down = function (knex) {
