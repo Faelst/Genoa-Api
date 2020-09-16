@@ -1,13 +1,29 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const Api = require('../Api');
-const { param } = require('express-validator');
+const { clients, contracts } = require("../Api");
 
-router.get('/clients', Api.clients.getAllClients);
+const {
+  postClientValidator,
+  putClientValidator,
+  postContractValidator,
+} = require("../Middleware/Validator");
 
-router.get('/client/:id', param('id').customSanitizer(id => {
-  return id
-}), Api.clients.getClient);
+//------------------ Client Routers ----------------------- //
+router.get("/clients", clients.getAllClients);
 
-router.post('/client', Api.clients.insertClient)
+router.get("/client/:id", clients.getClient);
+
+router.post("/client", postClientValidator, clients.insertClient);
+
+router.put("/client", putClientValidator, clients.alterClient);
+
+router.delete("/client/:id", clients.deleteClient);
+//------------------ Client Routers ----------------------- //
+
+
+//------------------ Contract Routers ----------------------- //
+
+router.post("/Contract", postContractValidator, contracts.insertContract);
+
+module.exports = router;

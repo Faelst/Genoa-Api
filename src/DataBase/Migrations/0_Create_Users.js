@@ -4,8 +4,9 @@ exports.up = function (knex) {
     table.string("name").notNull();
     table.string("user_name").notNull().unique();
     table.string("password", 60).notNull();
-    table.boolean("delected").notNull().default(true);
-    table.timestamp("issue_date").notNull().default(knex.fn.now());
+    table.boolean("deleted").notNull().default(false);
+    table.timestamp("create_at").notNull().default(knex.fn.now());
+    table.timestamp("deleted_at").default(null);
   });
 };
 

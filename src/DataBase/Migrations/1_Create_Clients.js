@@ -5,8 +5,9 @@ exports.up = function (knex) {
     table.string("type_text_desc").notNull();
     table.string("type_text_id").notNull().unique();
     table.date("inauguration_date").notNull();
-    table.boolean("delected").notNull().default(false);
-    table.timestamp("issue_date").notNull().default(knex.fn.now());
+    table.boolean("deleted").notNull().default(false);
+    table.timestamp("create_at").notNull().default(knex.fn.now());
+    table.timestamp("deleted_at").default(null);
   });
 };
 
