@@ -24,6 +24,10 @@ router.delete("/client/:id", clients.deleteClient);
 
 //------------------ Contract Routers ----------------------- //
 
+router.get("/Contracts", contracts.getContracts);
+
+router.get("/Contract/:id", contracts.getContract);
+
 router.post("/Contract", postContractValidator, contracts.insertContract);
 
 module.exports = router;

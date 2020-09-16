@@ -5,25 +5,25 @@ const moment = require("moment");
 const getAllClients = async (req, res) => {
   try {
     const clients = await db("clients").where({ deleted: 0 });
-    if(clients.length){
-      res.status(200).json({
-        status: true,
-        data: clients
-      });
-    }else{
-      res.status(202).json({
+    if (!clients.length) {
+      return res.status(202).json({
         status: false,
         message: "Not found any client"
       });
     }
-  } catch (e) {
-    console.log(e);
-    return res.status(400).json({
-      status: 400,
-      error: "Unexpected error",
-      message: e.sqlMessage
+
+    res.status(200).json({
+      status: true,
+      data: clients
     });
-  }
+  } catch (e) {
+  console.log(e);
+  return res.status(400).json({
+    status: false,
+    error: "Unexpected error",
+    message: e.sqlMessage
+  });
+}
 };
 
 const getClient = async (req, res) => {
@@ -42,7 +42,10 @@ const getClient = async (req, res) => {
     });
 
     if (client) {
-      res.status(200).send(client);
+      res.status(200).send({
+        status: true,
+        data: client
+      });
     } else {
       res.status(202).send({
         message: "Client not found",
@@ -52,7 +55,7 @@ const getClient = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).json({
-      status: 400,
+      status: false,
       error: "Unexpected error",
       message: e.sqlMessage
     });
@@ -67,20 +70,19 @@ const insertClient = async (req, res) => {
 
   let { type_text_id, name, inauguration_date } = req.body;
 
-  
   type_text_id = type_text_id.replace(/[^\w\s]/gi, "");
 
   let [verifyClientExist] = await db("clients").where({
     type_text_id
   });
-  
+
   if (verifyClientExist && verifyClientExist.deleted !== 1) {
     return res.status(203).send({
       status: false,
       message: "Client already registered",
     });
-  }else if(verifyClientExist && verifyClientExist.deleted == 1){
-    const {id} = verifyClientExist
+  } else if (verifyClientExist && verifyClientExist.deleted == 1) {
+    const { id } = verifyClientExist
     await db("clients").where({ id }).update({
       deleted: 0,
       deleted_at: null
@@ -100,8 +102,8 @@ const insertClient = async (req, res) => {
     ? (type_text_desc = "CNPJ")
     : (type_text_desc = "CPF");
 
-  inauguration_date = moment(new Date(inauguration_date)).format("YYYY-MM-DD");
-  
+  inauguration_date = moment(inauguration_date, 'DD/MM/YYYY').format('YYYY-MM-DD');
+
   try {
     const [newClientId] = await db("clients").insert({
       name,
@@ -118,7 +120,7 @@ const insertClient = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).json({
-      status: 400,
+      status: false,
       error: "Unexpected error",
       message: e.sqlMessage
     });
@@ -136,7 +138,7 @@ const alterClient = async (req, res) => {
 
     filter.id
       ? (filter = { id: filter.id })
-      : (filter = { type_text_id: filter.type_text_id });
+      : (filter = { type_text_id: filter.type_text_id.replace(/[^\w\s]/gi, "") });
 
     const [client] = await db("clients").where(filter);
 
@@ -144,6 +146,7 @@ const alterClient = async (req, res) => {
       const { id } = client;
 
       if (data.id) delete data.id;
+      if (data.type_text_id) data.type_text_id = data.type_text_id.replace(/[^\w\s]/gi, "")
 
       if (data.type_text_id) {
         data.type_text_id.length >= 14
@@ -152,9 +155,12 @@ const alterClient = async (req, res) => {
       }
 
       if (data.inauguration_date)
-        data.inauguration_date = moment(
-          new Date(data.inauguration_date)
-        ).format("YYYY-MM-DD");
+        data.inauguration_date = moment(data.inauguration_date, 'DD/MM/YYYY').format('YYYY-MM-DD')
+
+      data.deleted && data.deleted == 1 ?
+        data.deleted_at = moment().format() :
+        data.deleted_at = null
+
 
       await db("clients").where({ id }).update(data);
 
@@ -171,7 +177,7 @@ const alterClient = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).json({
-      status: 400,
+      status: false,
       error: "Unexpected error",
       message: e.sqlMessage
     });
@@ -193,6 +199,7 @@ const deleteClient = async (req, res) => {
       });
 
       client.deleted = 1;
+      client.deleted_at = moment().format();
 
       res.status(200).send({
         status: true,
@@ -207,7 +214,7 @@ const deleteClient = async (req, res) => {
   } catch (e) {
     console.log(e);
     return res.status(400).json({
-      status: 400,
+      status: false,
       error: "Unexpected error",
       message: e.sqlMessage
     });

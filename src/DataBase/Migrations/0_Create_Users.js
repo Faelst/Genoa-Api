@@ -6,7 +6,7 @@ exports.up = function (knex) {
     table.string("password", 60).notNull();
     table.boolean("deleted").notNull().default(false);
     table.timestamp("create_at").notNull().default(knex.fn.now());
-    table.timestamp("deleted_at").default(null);
+    table.timestamp("deleted_at").nullable();
   });
 };
 
