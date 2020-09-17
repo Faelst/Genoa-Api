@@ -73,7 +73,52 @@ module.exports.postContractValidator = [
     ),
 ];
 
+module.exports.putContractValidator = [
+  check("filter.id")
+    .isInt()
+    .withMessage('Invalid Value, filter.id has be type integer'),
+  check("data.user_id")
+    .optional()
+    .isInt()
+    .withMessage("data.user_id be incorrect"),
+  check("data.client_id")
+    .optional()
+    .isInt()
+    .withMessage("data.client_id be incorrect"),
+  check("data.type_text_id")
+    .optional()
+    .isLength({ min: 11, max: 18 })
+    .withMessage("Incorrect 'CPF/CNPJ'"),
+  check("data.beginning_date")
+    .optional()
+    .custom(isValidDate)
+    .withMessage("Not found/incorrect 'beginning_date'"),
+  check("data.final_date")
+    .optional()
+    .custom(isValidDate)
+    .withMessage("Not found/incorrect 'beginning_date'"),
+  check("data.total_amount_contract")
+    .optional()
+    .isDecimal()
+    .withMessage("Not found/incorrect 'total_amount_contract'")
+    .custom(isValidTotalAmount)
+    .withMessage(
+      "The total contract value does not meet the necessary requirements"
+    ),
+  check("data.deleted")
+    .optional()
+    .isInt()
+    .custom(isValidDelete)
+    .whitelist(
+      "data.deleted be incorrect, use 1 for deleted or 0 for not deleted"
+    ),
+];
+
 /// ------------------- Contract Validators ----------------------------- //
+
+function isValidDelete(deleted) {
+  return deleted == 0 || deleted == 1 ? true : false;
+}
 
 function isValidDate(date) {
   if (!date.match(/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/)) return false;

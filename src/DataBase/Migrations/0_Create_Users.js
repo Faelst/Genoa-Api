@@ -9,7 +9,8 @@ exports.up = function (knex) {
     table.timestamp("deleted_at").nullable();
   }).then(() => {
     return knex("users").insert([
-      { name: "Genoa Seguros", user_name: "Genoa_User",  password: "95f6aef82c3bed7904c8d4daff" }
+      { name: "Genoa Seguros", user_name: "Genoa_User",  password: "95f6aef82c3bed7904c8d4daff" },
+      { name: "Mirela Oliveira", user_name: "Mirela_user",  password: "312kjlk12lkkj12km3k23bi1p23jl" }
     ]);
   }
   )

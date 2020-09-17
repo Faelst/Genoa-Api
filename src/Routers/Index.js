@@ -7,6 +7,7 @@ const {
   postClientValidator,
   putClientValidator,
   postContractValidator,
+  putContractValidator,
 } = require("../Middleware/Validator");
 
 //------------------ Client Routers ----------------------- //
@@ -32,6 +33,6 @@ router.post("/Contract", postContractValidator, contracts.insertContract);
 
 router.delete("/Contract/:id", contracts.deleteContract);
 
-router.put("/Contract/", contracts.alterContract);
+router.put("/Contract/", putContractValidator, contracts.alterContract);
 
 module.exports = router;
